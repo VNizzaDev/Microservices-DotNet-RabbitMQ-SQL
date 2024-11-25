@@ -1,11 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using OrderService.Data;
+using OrderService.Models;
+using OrderService.Repositories;
+using OrderService.Repositories.Contracts;
+using OrderService.Services;
+using OrderService.Services.Contracts;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Add EF dependencies
+builder.Services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderApplicationService>();
 
 var app = builder.Build();
 
